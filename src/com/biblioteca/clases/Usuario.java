@@ -4,6 +4,7 @@ public class Usuario {
 public String DNI;
 public String nombre;
 public boolean es_socio;
+
 public Usuario(String DNI, String nombre,boolean es_socio) {
 	this.DNI = DNI;
 	this.nombre = nombre;
