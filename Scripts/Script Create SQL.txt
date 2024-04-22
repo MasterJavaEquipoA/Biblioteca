@@ -1,0 +1,32 @@
+CREATE SCHEMA biblioteca ;
+ 
+CREATE TABLE biblioteca.usuarios (
+  dni VARCHAR(30) NOT NULL,
+  nombre VARCHAR(100) NOT NULL,
+  socio TINYINT(1) NOT NULL,
+  PRIMARY KEY (dni));
+ 
+CREATE TABLE biblioteca.documentos (
+  codigoAlfaNum VARCHAR(50) NOT NULL,
+  titulo VARCHAR(100) NOT NULL,
+  anoPubli INT NULL,
+  PRIMARY KEY (codigoAlfaNum));
+ 
+CREATE TABLE biblioteca.prestamos (
+  dni VARCHAR(30) NOT NULL,
+  codigoAlfaNum VARCHAR(50) NOT NULL,
+  fechaIniPrestamo DATE NOT NULL,
+  fechaFinPrestamo DATE NOT NULL,
+  devuelto TINYINT(1) NOT NULL,
+  PRIMARY KEY (dni, codigoAlfaNum),
+  INDEX codAlfaNum_idx (codigoAlfaNum ASC) VISIBLE,
+  CONSTRAINT dni
+    FOREIGN KEY (dni)
+    REFERENCES biblioteca.usuarios (dni)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT codAlfaNum
+    FOREIGN KEY (codigoAlfaNum)
+    REFERENCES biblioteca.documentos (codigoAlfaNum)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
