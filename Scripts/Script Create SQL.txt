@@ -10,6 +10,7 @@ CREATE TABLE biblioteca.documentos (
   codigoAlfaNum VARCHAR(50) NOT NULL,
   titulo VARCHAR(100) NOT NULL,
   anoPubli INT NULL,
+  prestado TINYINT(1) NOT NULL,
   PRIMARY KEY (codigoAlfaNum));
  
 CREATE TABLE biblioteca.prestamos (
