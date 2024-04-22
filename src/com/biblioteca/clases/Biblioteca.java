@@ -1,19 +1,31 @@
 package com.biblioteca.clases;
 
+import java.sql.Statement;
+
 public class Biblioteca {
 
-	public void seleccionarDocumento(String codigo) {
+	public Documento seleccionarDocumento(String codigo) {
 		String query = "SELECT * FROM documentos WHERE codigoAlfaNum = " + codigo;
 		// Falta codigo
 		// Documento doc = new Libro();
 		// Documento doc = new Revista();
+		return new Documento(codigo, query);
 	}
 
-	public void prestarDocumento(Usuario usuario, Documento documento) {
-
+	public void prestarDocumento(String usuario, Documento documento) {
+		Statement stmt ;
+		if(validarUsuario(usuario)) {
+			
+		}
 	}
 
-	public void devolverDocumento(Usuario usuario, Documento documento) {
+	private boolean validarUsuario(String usuario) {
+		String query = "SELECT * FROM usuarios WHERE dni = "+usuario;
+		//
+		return false;
+	}
+
+	public void devolverDocumento(String usuario, Documento documento) {
 
 	}
 
