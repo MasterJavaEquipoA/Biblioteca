@@ -11,6 +11,9 @@ public class Usuario {
 		this.esSocio = esSocio;
 	}
 
+	public Usuario(boolean b) {
+	}
+
 	public String getDni() {
 		return dni;
 	}

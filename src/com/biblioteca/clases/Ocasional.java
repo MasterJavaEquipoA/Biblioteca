@@ -2,11 +2,16 @@ package com.biblioteca.clases;
 
 public class Ocasional extends Usuario{
 	
-	private final static int MAX_PRESTAMOS = 2;
+	public final static int MAX_PRESTAMOS = 2;
 	
 	
-	public Ocasional(String dni, String nombre, boolean esSocio) {
-		super(dni, nombre, esSocio);
+	public Ocasional(String dni, String nombre) {
+		super(dni, nombre, false);
+	}
+
+
+	public Ocasional() {
+		super(false);
 	}
 
 
