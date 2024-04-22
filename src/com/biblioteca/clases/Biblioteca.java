@@ -21,7 +21,7 @@ public class Biblioteca {
 		String query = "SELECT * FROM documentos WHERE titulo LIKE %" + titulo + "%";
 		return new Documento(query, titulo);
 	}
-
+//biblioteca
 	public String generarInformesPrestados() {
 		String query = "SELECT * FROM prestamos";
 		return "";
