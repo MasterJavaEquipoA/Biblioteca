@@ -21,7 +21,7 @@ public class Usuario {
 	}
 
 	public void setDni(String dni) {
-		dni = dni;
+		this.dni = dni;
 	}
 
 	public String getNombre() {
