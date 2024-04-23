@@ -23,4 +23,9 @@ public class Libro extends Documento {
 		this.anoPubli = anoPubli;
 	}
 
+	@Override
+	public String toString() {
+		return "Libro: " + super.toString() + " anoPubli=" + anoPubli + ".";
+	}
+
 }

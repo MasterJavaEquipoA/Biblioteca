@@ -13,4 +13,10 @@ public class Revista extends Documento {
 	public Revista() {
 		// TODO Auto-generated constructor stub
 	}
+
+	@Override
+	public String toString() {
+		return "Revista: " + super.toString();
+	}
+
 }
