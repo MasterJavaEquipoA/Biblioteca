@@ -5,6 +5,10 @@ public class Ocasional extends Usuario{
 	private final static int MAX_PRESTAMOS = 2;
 	
 	
+	public Ocasional() {
+		
+	}
+	
 	public Ocasional(String dni, String nombre, boolean esSocio) {
 		super(dni, nombre, esSocio);
 	}

@@ -11,7 +11,7 @@ public class Conexion {
 	private static final String user = "root";
 	private static final String password = "root";
 	
-	private Connection conexion;
+	private static Connection conexion;
 	
 	public Conexion() {
 		
@@ -32,7 +32,7 @@ public class Conexion {
 	 * Devuelve la conexion jdbc a sql
 	 * @return
 	 */
-	public Connection obtenerConexion() {
+	public static Connection obtenerConexion() {
 		return conexion;
 	}
 }

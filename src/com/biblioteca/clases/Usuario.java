@@ -1,9 +1,14 @@
 package com.biblioteca.clases;
 
 public class Usuario {
+	
 	private String dni;
 	private String nombre;
 	private boolean esSocio;
+	
+	public Usuario() {
+		
+	}
 
 	public Usuario(String dni, String nombre, boolean esSocio) {
 		this.dni = dni;
@@ -27,4 +32,8 @@ public class Usuario {
 		this.nombre = nombre;
 	}
 
+	@Override
+	public String toString() {
+		return "Usuario [dni=" + dni + ", nombre=" + nombre + ", esSocio=" + esSocio + "]";
+	}
 }
