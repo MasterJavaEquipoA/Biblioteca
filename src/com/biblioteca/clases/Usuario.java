@@ -5,18 +5,16 @@ package com.biblioteca.clases;
  * @author Admin
  *
  */
-public class Usuario {
+public abstract class Usuario {
 	private String dni;
 	private String nombre;
-	private boolean esSocio;
 
-	public Usuario(String dni, String nombre, boolean esSocio) {
+	protected Usuario(String dni, String nombre) {
 		this.dni = dni;
 		this.nombre = nombre;
-		this.esSocio = esSocio;
 	}
 
-	public Usuario(boolean b) {
+	protected Usuario() {
 	}
 
 	public String getDni() {
@@ -24,7 +22,7 @@ public class Usuario {
 	}
 
 	public void setDni(String dni) {
-		dni = dni;
+		this.dni = dni;
 	}
 
 	public String getNombre() {
@@ -33,14 +31,6 @@ public class Usuario {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public boolean isEsSocio() {
-		return esSocio;
-	}
-
-	public void setEsSocio(boolean esSocio) {
-		this.esSocio = esSocio;
 	}
 
 }

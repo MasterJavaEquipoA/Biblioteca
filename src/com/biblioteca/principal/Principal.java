@@ -26,14 +26,15 @@ public class Principal {
 			switch (opcion) {
 			case 1:
 				doc = biblio.seleccionarDocumento(
-						(String) JOptionPane.showInputDialog("Escribe el codigo alfanumerico del documento:"));
+						JOptionPane.showInputDialog("Escribe el codigo alfanumerico del documento:"));
 				break;
 			case 2:
 				doc = biblio.buscarDocumento(
-						(String) JOptionPane.showInputDialog("Escribe el titulo del documento que deseas buscar:"));
+						JOptionPane.showInputDialog("Escribe el titulo del documento que deseas buscar:"));
 				break;
 			case 3:
 				JOptionPane.showMessageDialog(null, biblio.generarInformesPrestados());
+				break;
 			default:
 				break;
 			}
@@ -41,12 +42,10 @@ public class Principal {
 				opcion = Integer.valueOf(JOptionPane.showInputDialog(textoPrestamo));
 				switch (opcion) {
 				case 1:
-					biblio.prestarDocumento((String) JOptionPane.showInputDialog("Prestando: Escriba el dni del socio"),
-							doc);
+					biblio.prestarDocumento(JOptionPane.showInputDialog("Prestando: Escriba el dni del socio"), doc);
 					break;
 				case 2:
-					biblio.devolverDocumento(
-							(String) JOptionPane.showInputDialog("Devolviendo: Escriba el dni del socio"), doc);
+					biblio.devolverDocumento(JOptionPane.showInputDialog("Devolviendo: Escriba el dni del socio"), doc);
 					break;
 				default:
 					break;

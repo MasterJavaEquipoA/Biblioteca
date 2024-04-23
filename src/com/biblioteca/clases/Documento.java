@@ -1,22 +1,23 @@
 package com.biblioteca.clases;
+
 /**
  * 
  * @author Admin
  *
  */
-public class Documento {
+public abstract class Documento {
 
 	private String codigoAlfaNum;
 	private String titulo;
 	private boolean prestado;
 
-	public Documento(String codigoAlfaNum, String titulo) {
+	protected Documento(String codigoAlfaNum, String titulo) {
 		super();
 		this.codigoAlfaNum = codigoAlfaNum;
 		this.titulo = titulo;
 	}
 
-	public Documento() {
+	protected Documento() {
 	}
 
 	public String getCodigoAlfaNum() {

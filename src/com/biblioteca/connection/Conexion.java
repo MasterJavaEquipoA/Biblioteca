@@ -18,14 +18,11 @@ public class Conexion {
 	private static final String USER = "root";
 	private static final String PASSWORD = "root";
 
-	private static Connection conexion;
-
 	public static Connection getConexion() {
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-
+			Connection conexion = DriverManager.getConnection(URL, USER, PASSWORD);
 			System.out.println("Conexion establecida!");
 			return conexion;
 		} catch (ClassNotFoundException | SQLException e) {

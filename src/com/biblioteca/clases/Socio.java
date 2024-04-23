@@ -1,4 +1,5 @@
 package com.biblioteca.clases;
+
 /**
  * 
  * @author Admin
@@ -9,12 +10,12 @@ public class Socio extends Usuario {
 	public final static int MAX_PRESTAMOS = 20;
 
 	public Socio(String dni, String nombre) {
-		super(dni, nombre, true);
+		super(dni, nombre);
 
 	}
 
 	public Socio() {
-		super(true);
+		super();
 	}
 
 	@Override

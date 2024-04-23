@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.sql.Date;
 import java.sql.Connection;
 
 import com.biblioteca.connection.Conexion;
@@ -18,6 +18,7 @@ import com.biblioteca.connection.Conexion;
  *
  */
 public class Biblioteca {
+	private static final String ANO_PUBLI = "anoPubli";
 	private Connection con;
 
 	public Biblioteca() throws SQLException {
@@ -34,20 +35,24 @@ public class Biblioteca {
 	public Documento seleccionarDocumento(String codigo) {
 		String query = "SELECT * FROM documentos WHERE codigoAlfaNum = ?";
 		Documento doc = null;
-		try {
-			PreparedStatement selecDoc = con.prepareStatement(query);
+		try (PreparedStatement selecDoc = con.prepareStatement(query)) {
 			selecDoc.setString(1, codigo);
 			ResultSet rs = selecDoc.executeQuery();
 			if (rs.next()) {
-				if (rs.getInt("anoPubli") > 0) {
+				if (rs.getInt(ANO_PUBLI) > 0) {
 					doc = new Libro();
+
 				} else {
 					doc = new Revista();
 				}
+				if (doc instanceof Libro libro) {
+					libro.setAnoPubli(rs.getInt(ANO_PUBLI));
+
+				}
 				doc.setCodigoAlfaNum(rs.getString("codigoAlfaNum"));
 				doc.setTitulo(rs.getString("titulo"));
-				doc.setPrestado(rs.getInt("prestado") > 0);
-				selecDoc.close();
+				doc.setPrestado(rs.getBoolean("prestado"));
+				rs.close();
 			}
 
 		} catch (SQLException e) {
@@ -74,7 +79,7 @@ public class Biblioteca {
 						+ "devuelto) VALUES (?,?,?,?,?);";
 				LocalDate localDateHoy = LocalDate.now();
 				LocalDate finPrestamo;
-				if (usuario.isEsSocio()) {
+				if (usuario instanceof Socio) {
 					finPrestamo = documento instanceof Revista
 							? localDateHoy.plus(Revista.MAX_DURACION_SOCIO, ChronoUnit.DAYS)
 							: localDateHoy.plus(Libro.MAX_DURACION_SOCIO, ChronoUnit.DAYS);
@@ -119,18 +124,19 @@ public class Biblioteca {
 	public void devolverDocumento(String dni, Documento documento) {
 		if (documento.isPrestado()) {
 			Usuario usuario = validarUsuario(dni);
-			if (usuario instanceof Socio || usuario instanceof Ocasional) {
+			if (usuario != null) {
 
 				String queryUpdate = "UPDATE documentos SET prestado = 0 WHERE codigoAlfaNum = '"
 						+ documento.getCodigoAlfaNum() + "';";
-				String queryInsert = "UPDATE prestamos SET devuelto = 1 WHERE dni = ? AND codigoAlfaNum = ?";
+				String queryInsert = "UPDATE prestamos SET devuelto = 1 , fechaFinPrestamo = ? WHERE dni = ? AND codigoAlfaNum = ?";
 
 				try (Statement stmt = con.createStatement();
 						PreparedStatement pStmt = con.prepareStatement(queryInsert)) {
 					con.setAutoCommit(false);
 					stmt.execute(queryUpdate);
-					pStmt.setString(1, dni);
-					pStmt.setString(2, documento.getCodigoAlfaNum());
+					pStmt.setDate(1, Date.valueOf(LocalDate.now()));
+					pStmt.setString(2, dni);
+					pStmt.setString(3, documento.getCodigoAlfaNum());
 					pStmt.execute();
 
 					con.commit();
@@ -158,25 +164,22 @@ public class Biblioteca {
 	public Documento buscarDocumento(String titulo) {
 		String query = "SELECT * FROM documentos WHERE titulo LIKE '%" + titulo + "%'";
 		Documento doc = null;
-		try {
-			Statement stmt = con.createStatement();
+		try (Statement stmt = con.createStatement()) {
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
-				if (rs.getInt("anoPubli") > 0) {
+				if (rs.getInt(ANO_PUBLI) > 0) {
 					doc = new Libro();
 				} else {
 					doc = new Revista();
 				}
 				doc.setCodigoAlfaNum(rs.getString("codigoAlfaNum"));
 				doc.setTitulo(rs.getString("titulo"));
-				doc.setPrestado(rs.getInt("prestado") > 0);
+				doc.setPrestado(rs.getBoolean("prestado"));
 				if (doc instanceof Libro libro) {
-					libro = (Libro) doc;
-					libro.setAnoPubli(rs.getInt("anoPubli"));
-					doc = libro;
+					libro.setAnoPubli(rs.getInt(ANO_PUBLI));
 				}
 				System.out.println("Exito, encontrado: " + doc.toString());
-				stmt.close();
+				rs.close();
 			} else {
 				System.out.println("No se ha encontrado el libro");
 			}
@@ -196,12 +199,13 @@ public class Biblioteca {
 	 *         prestados
 	 */
 	public String generarInformesPrestados() {
-		String query = "SELECT d.titulo,p.codigoAlfaNum,p.fechaIniPrestamo,p.fechaFinPrestamo,d.anoPubli,"
-				+ "u.dni, u.socio FROM usuarios u JOIN prestamos p ON u.dni = p.dni JOIN documentos d ON "
-				+ "p.codigoAlfaNum = d.codigoAlfaNum";
-		String informe = "";
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT d.titulo,p.codigoAlfaNum,p.fechaIniPrestamo,p.fechaFinPrestamo,d.anoPubli,");
+		query.append("u.dni, u.socio FROM usuarios u JOIN prestamos p ON u.dni = p.dni JOIN documentos d ON ");
+		query.append("p.codigoAlfaNum = d.codigoAlfaNum");
+		StringBuilder informe = new StringBuilder();
 		try (Statement stmt = con.createStatement()) {
-			ResultSet rs = stmt.executeQuery(query);
+			ResultSet rs = stmt.executeQuery(query.toString());
 			while (rs.next()) {
 				long inicio = rs.getDate("p.fechaIniPrestamo").getTime();
 				long fin = rs.getDate("p.fechaFinPrestamo").getTime();
@@ -210,7 +214,7 @@ public class Biblioteca {
 				String linea = String.format("%s (%s)  Cod:%s  Plazo:%s dias  Prestado a:%s(%s) \n",
 						rs.getString("d.titulo"), rs.getString("d.anoPubli"), rs.getString("p.codigoAlfaNum"), days,
 						rs.getString("u.dni"), socio);
-				informe += linea;
+				informe.append(linea);
 
 			}
 			System.out.println("-----------Informe generado----------");
@@ -218,7 +222,7 @@ public class Biblioteca {
 
 			e.printStackTrace();
 		}
-		return informe;
+		return informe.toString();
 	}
 
 	/**
@@ -252,8 +256,7 @@ public class Biblioteca {
 
 		String query = "SELECT * FROM usuarios WHERE dni = ?";
 		Usuario usuario = null;
-		try {
-			PreparedStatement valUsua = con.prepareStatement(query);
+		try (PreparedStatement valUsua = con.prepareStatement(query)) {
 			valUsua.setString(1, dni);
 			ResultSet rs = valUsua.executeQuery();
 			if (rs.next()) {
@@ -264,8 +267,8 @@ public class Biblioteca {
 				}
 				usuario.setDni(rs.getString("dni"));
 				usuario.setNombre(rs.getString("nombre"));
-				usuario.setEsSocio(rs.getBoolean("socio"));
 			}
+			rs.close();
 		} catch (SQLException e1) {
 
 			e1.printStackTrace();
