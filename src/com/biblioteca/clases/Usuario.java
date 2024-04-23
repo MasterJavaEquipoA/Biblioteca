@@ -30,4 +30,12 @@ public class Usuario {
 		this.nombre = nombre;
 	}
 
+	public boolean isEsSocio() {
+		return esSocio;
+	}
+
+	public void setEsSocio(boolean esSocio) {
+		this.esSocio = esSocio;
+	}
+
 }
