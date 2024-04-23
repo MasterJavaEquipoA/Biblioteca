@@ -6,71 +6,92 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
 import com.biblioteca.connection.Conexion;
 
 public class Biblioteca {
 
-	//Importo la conexion desde mi clase conexion creada previamente
+	// Importo la conexion desde mi clase conexion creada previamente
 	private static Connection conexion = Conexion.establecerConexion();
-	
+
 	/**
-	 * Recibe un código de documento (codigoAlfaNum)
-	 * Busca en la BD si existe un doc con ese codigo
+	 * Recibe un código de documento (codigoAlfaNum) Busca en la BD si existe un doc
+	 * con ese codigo
+	 * 
 	 * @param codigo
 	 * @return
 	 */
 	public static Documento seleccionarDocumento(String codigo) {
-		String query = 	"SELECT *"
-						+ "FROM documentos "
-						+ "WHERE codigoAlfaNum = " + codigo;
+		String query = "SELECT *" + 
+						"FROM documentos " +
+						"WHERE codigoAlfaNum = ?;";
+		Documento documento = null;
 		
+
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(query);
-			ResultSet resultado = stmt.executeQuery();
+			stmt.setString(1, codigo);
 			
+			ResultSet resultado = stmt.executeQuery();
+
 			if (resultado.next()) {
+
+				if (resultado.getInt("anoPubli") > 0 ) {
+					
+					documento = new Libro();
+					
+					if(documento instanceof Libro libro) {
+						
+						libro.setAnoPubli(resultado.getInt("anoPubli"));
+					}
+					
+				}else {
+					documento = new Revista();
+				}
 				
-				System.out.println("El libro que has seleccionado existe en nuesta BD!");
-				System.out.println(resultado.toString());
-				
-			}else {
+				documento.setTitulo(resultado.getString("titulo"));
+				documento.setCodigoAlfaNum(resultado.getString("codigoAlfaNum"));
+
+			} else {
 				System.out.println("No existe documento con ese codigo..");
 			}
-			
+
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		
-		return new Documento();
+
+		return documento;
 	}
-	
-	
+
 	/**
-	 * Vincula el objeto documento a un usuario
-	 * Primero se llama a la funcion que valida que usuario existe en la BD
+	 * Vincula el objeto documento a un usuario Primero se llama a la funcion que
+	 * valida que usuario existe en la BD
+	 * 
 	 * @param usuario
 	 * @param documento
 	 */
 	public void prestarDocumento(String usuario, Documento documento) {
-		Statement stmt ;
-		if(validarUsuario(usuario)) {
-			
+		Statement stmt;
+		if (validarUsuario(usuario)) {
+
 		}
 	}
 
 	/**
 	 * Valida usuaio en la BD mediante una consulta
+	 * 
 	 * @param usuario
 	 * @return
 	 */
-	private boolean validarUsuario(String usuario) {
-		String query = "SELECT * FROM usuarios WHERE dni = "+usuario;
+	public static boolean validarUsuario(String usuario) {
+		String query = "SELECT * FROM usuarios WHERE dni = " + usuario;
 		//
 		return false;
 	}
 
 	/**
 	 * Desvincula el documento al usuario
+	 * 
 	 * @param usuario
 	 * @param documento
 	 */
@@ -80,6 +101,7 @@ public class Biblioteca {
 
 	/**
 	 * Busca un documento en la BD mediante semejanza con el titulo dado
+	 * 
 	 * @param titulo
 	 * @return
 	 */
@@ -88,9 +110,10 @@ public class Biblioteca {
 		return new Documento(query, titulo);
 	}
 
-	//Metodos de biblioteca
+	// Metodos de biblioteca
 	/**
 	 * Genera un informe detallado con info sobre los documentos prestados
+	 * 
 	 * @return
 	 */
 	public String generarInformesPrestados() {

@@ -24,5 +24,4 @@ public class Ocasional extends Usuario{
 		return "Ocasional [getDni()=" + getDni() + ", getNombre()=" + getNombre() + ", getClass()=" + getClass()
 				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
 	}
-	
 }
