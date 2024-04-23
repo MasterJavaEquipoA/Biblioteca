@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.sql.Date;
 import java.sql.Connection;
 
@@ -161,12 +164,13 @@ public class Biblioteca {
 	 * @param titulo en formato cadena del libro, puede ser parcial
 	 * @return Documento que coincide con la busqueda o nulo en su defecto
 	 */
-	public Documento buscarDocumento(String titulo) {
+	public List<Documento> buscarDocumento(String titulo) {
 		String query = "SELECT * FROM documentos WHERE titulo LIKE '%" + titulo + "%'";
-		Documento doc = null;
+		List<Documento> listaDoc = new LinkedList<>();
 		try (Statement stmt = con.createStatement()) {
 			ResultSet rs = stmt.executeQuery(query);
-			if (rs.next()) {
+			Documento doc = null;
+			while (rs.next()) {
 				if (rs.getInt(ANO_PUBLI) > 0) {
 					doc = new Libro();
 				} else {
@@ -179,16 +183,17 @@ public class Biblioteca {
 					libro.setAnoPubli(rs.getInt(ANO_PUBLI));
 				}
 				System.out.println("Exito, encontrado: " + doc.toString());
-				rs.close();
-			} else {
-				System.out.println("No se ha encontrado el libro");
+				listaDoc.add(doc);
 			}
+			rs.close();
+
+			System.out.println("No se ha encontrado el libro");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return doc;
+		return listaDoc;
 	}
 
 	/**
@@ -212,8 +217,8 @@ public class Biblioteca {
 				String days = String.valueOf((fin - inicio) / 86400000);
 				String socio = rs.getInt("u.socio") > 0 ? "Socio" : "Usuario Ocasional";
 				String linea = String.format("%s (%s)  Cod:%s  Plazo:%s dias  Prestado a:%s(%s) \n",
-						rs.getString("d.titulo"), rs.getString("d.anoPubli"), rs.getString("p.codigoAlfaNum"), days,
-						rs.getString("u.dni"), socio);
+						rs.getString("d.titulo"), rs.getString("d.anoPubli") == null ? "" : rs.getString("d.anoPubli"),
+						rs.getString("p.codigoAlfaNum"), days, rs.getString("u.dni"), socio);
 				informe.append(linea);
 
 			}

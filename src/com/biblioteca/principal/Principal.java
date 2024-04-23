@@ -1,6 +1,9 @@
 package com.biblioteca.principal;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -29,8 +32,19 @@ public class Principal {
 						JOptionPane.showInputDialog("Escribe el codigo alfanumerico del documento:"));
 				break;
 			case 2:
-				doc = biblio.buscarDocumento(
+				List<Documento> lista = new LinkedList<>();
+				lista = biblio.buscarDocumento(
 						JOptionPane.showInputDialog("Escribe el titulo del documento que deseas buscar:"));
+
+				StringBuilder selecDoc = new StringBuilder();
+				for (int i = 0; i < lista.size(); i++) {
+					selecDoc.append(i + ".- " + lista.get(i).getTitulo() + "\n");
+				}
+				int elegirDoc = Integer.valueOf(JOptionPane
+						.showInputDialog("Hemos encontrado estos documentos, elige uno:\n" + selecDoc.toString()));
+
+				doc = lista.get(opcion);
+
 				break;
 			case 3:
 				JOptionPane.showMessageDialog(null, biblio.generarInformesPrestados());
