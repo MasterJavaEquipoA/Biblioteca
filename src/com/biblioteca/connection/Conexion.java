@@ -13,7 +13,11 @@ public class Conexion {
 	
 	private static Connection conexion;
 	
-	public Conexion() {
+	/**
+	 * Establece la conexion y la devuelve, para ser usada en otras clases
+	 * @return
+	 */
+	public static Connection establecerConexion() {
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -25,14 +29,6 @@ public class Conexion {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	/**
-	 * Será llamado desde otras clases para realizar consultas
-	 * Devuelve la conexion jdbc a sql
-	 * @return
-	 */
-	public static Connection obtenerConexion() {
 		return conexion;
 	}
 }

@@ -1,5 +1,7 @@
 package com.biblioteca.clases;
 
+import com.biblioteca.connection.Conexion;
+
 public class Main {
 	public static void main(String[] args) {
 		
@@ -9,5 +11,9 @@ public class Main {
 		System.out.println("Si existe lo asignamos a documento actual");
 		
 		documentoActual = Biblioteca.seleccionarDocumento("131859855-9");
+		
+		
+		
+		
 	}
 }

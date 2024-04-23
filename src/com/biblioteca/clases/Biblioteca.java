@@ -11,7 +11,7 @@ import com.biblioteca.connection.Conexion;
 public class Biblioteca {
 
 	//Importo la conexion desde mi clase conexion creada previamente
-	private static Connection conexion = Conexion.obtenerConexion();
+	private static Connection conexion = Conexion.establecerConexion()
 	
 	/**
 	 * Recibe un código de documento (codigoAlfaNum)
