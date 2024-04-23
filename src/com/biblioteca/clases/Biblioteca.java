@@ -11,6 +11,12 @@ import java.sql.Connection;
 
 import com.biblioteca.connection.Conexion;
 
+/**
+ * Metodos que utilizan queries y transacciones a la BBDD biblioteca
+ * 
+ * @author Admin
+ *
+ */
 public class Biblioteca {
 	private Connection con;
 
@@ -19,6 +25,12 @@ public class Biblioteca {
 
 	}
 
+	/**
+	 * 
+	 * @param codigo codigo id del documento que se quiere seleccionar
+	 * @return Documento (Libro o Revista) que coincide en la BBDD o un objeto nulo
+	 *         en su defecto
+	 */
 	public Documento seleccionarDocumento(String codigo) {
 		String query = "SELECT * FROM documentos WHERE codigoAlfaNum = ?";
 		Documento doc = null;
@@ -45,13 +57,19 @@ public class Biblioteca {
 		return doc;
 	}
 
+	/**
+	 * Metodo para realizar las operaciones necesarias para prestar un libro
+	 * 
+	 * @param dni       en formato cadena
+	 * @param documento previamente selecionado
+	 */
 	public void prestarDocumento(String dni, Documento documento) {
 		if (!documento.isPrestado()) {
 			Usuario usuario = validarUsuario(dni);
 			if (usuario != null) {
 
-				String queryUpdate = "UPDATE documentos SET prestado = 1 WHERE codigoAlfaNum = "
-						+ documento.getCodigoAlfaNum();
+				String queryUpdate = "UPDATE documentos SET prestado = 1 WHERE codigoAlfaNum = '"
+						+ documento.getCodigoAlfaNum() + "'";
 				String queryInsert = "INSERT INTO prestamos(dni,codigoAlfaNum,fechaIniPrestamo,fechaFinPrestamo,"
 						+ "devuelto) VALUES (?,?,?,?,?);";
 				LocalDate localDateHoy = LocalDate.now();
@@ -92,13 +110,19 @@ public class Biblioteca {
 
 	}
 
+	/**
+	 * Metodo para realizar las operaciones necesarias para devolver un libro
+	 * 
+	 * @param dni       en formato cadena
+	 * @param documento previamente selecionado
+	 */
 	public void devolverDocumento(String dni, Documento documento) {
 		if (documento.isPrestado()) {
 			Usuario usuario = validarUsuario(dni);
 			if (usuario instanceof Socio || usuario instanceof Ocasional) {
 
-				String queryUpdate = "UPDATE documentos SET prestado = 0 WHERE codigoAlfaNum = "
-						+ documento.getCodigoAlfaNum();
+				String queryUpdate = "UPDATE documentos SET prestado = 0 WHERE codigoAlfaNum = '"
+						+ documento.getCodigoAlfaNum() + "';";
 				String queryInsert = "UPDATE prestamos SET devuelto = 1 WHERE dni = ? AND codigoAlfaNum = ?";
 
 				try (Statement stmt = con.createStatement();
@@ -125,6 +149,12 @@ public class Biblioteca {
 		}
 	}
 
+	/**
+	 * Busca un documento segun el titulo
+	 * 
+	 * @param titulo en formato cadena del libro, puede ser parcial
+	 * @return Documento que coincide con la busqueda o nulo en su defecto
+	 */
 	public Documento buscarDocumento(String titulo) {
 		String query = "SELECT * FROM documentos WHERE titulo LIKE '%" + titulo + "%'";
 		Documento doc = null;
@@ -158,6 +188,13 @@ public class Biblioteca {
 		return doc;
 	}
 
+	/**
+	 * Realiza una query con triple join a la BBDD para obtener informacion de
+	 * documentos prestados
+	 * 
+	 * @return cadena con formato que contiene todo el historial de de documentos
+	 *         prestados
+	 */
 	public String generarInformesPrestados() {
 		String query = "SELECT d.titulo,p.codigoAlfaNum,p.fechaIniPrestamo,p.fechaFinPrestamo,d.anoPubli,"
 				+ "u.dni, u.socio FROM usuarios u JOIN prestamos p ON u.dni = p.dni JOIN documentos d ON "
@@ -184,6 +221,12 @@ public class Biblioteca {
 		return informe;
 	}
 
+	/**
+	 * Cierra la conexion a la BBDD
+	 * 
+	 * @param numero de opcion indicado en el JOPtionPane
+	 * @return booleano para continuar o no el bucle de operaciones
+	 */
 	public boolean salir(int numero) {
 		if (numero > 0) {
 			return true;
@@ -199,6 +242,12 @@ public class Biblioteca {
 
 	}
 
+	/**
+	 * Metodo que valida el dni de un usuario
+	 * 
+	 * @param dni en formato cadena de un usuario
+	 * @return el usuario coincidente de la BBDD o en su defecto nulo
+	 */
 	private Usuario validarUsuario(String dni) {
 
 		String query = "SELECT * FROM usuarios WHERE dni = ?";

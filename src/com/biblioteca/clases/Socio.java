@@ -1,5 +1,9 @@
 package com.biblioteca.clases;
-
+/**
+ * 
+ * @author Admin
+ *
+ */
 public class Socio extends Usuario {
 
 	public final static int MAX_PRESTAMOS = 20;

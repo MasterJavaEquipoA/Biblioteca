@@ -1,5 +1,9 @@
 package com.biblioteca.clases;
-
+/**
+ * 
+ * @author Admin
+ *
+ */
 public class Documento {
 
 	private String codigoAlfaNum;

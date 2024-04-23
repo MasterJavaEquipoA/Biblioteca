@@ -1,5 +1,9 @@
 package com.biblioteca.clases;
-
+/**
+ * 
+ * @author Admin
+ *
+ */
 public class Libro extends Documento {
 
 	public final static int MAX_DURACION_SOCIO = 30;

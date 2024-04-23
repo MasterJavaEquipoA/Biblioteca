@@ -7,6 +7,12 @@ import javax.swing.JOptionPane;
 import com.biblioteca.clases.Biblioteca;
 import com.biblioteca.clases.Documento;
 
+/**
+ * Ejecucion de las acciones del proyecto de biblioteca
+ * 
+ * @author Admin
+ *
+ */
 public class Principal {
 
 	public static void main(String[] args) {

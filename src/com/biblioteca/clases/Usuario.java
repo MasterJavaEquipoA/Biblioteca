@@ -1,5 +1,10 @@
 package com.biblioteca.clases;
 
+/**
+ * 
+ * @author Admin
+ *
+ */
 public class Usuario {
 	private String dni;
 	private String nombre;

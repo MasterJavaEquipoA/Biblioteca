@@ -6,11 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Conexion al servidor SQL
+ * 
+ * @author Admin
+ *
+ */
 public class Conexion {
 
-	private static final String url = "jdbc:mysql://localhost:3306/biblioteca";
-	private static final String user = "root";
-	private static final String password = "root";
+	private static final String URL = "jdbc:mysql://localhost:3306/biblioteca";
+	private static final String USER = "root";
+	private static final String PASSWORD = "root";
 
 	private static Connection conexion;
 
@@ -18,7 +24,7 @@ public class Conexion {
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conexion = DriverManager.getConnection(url, user, password);
+			conexion = DriverManager.getConnection(URL, USER, PASSWORD);
 
 			System.out.println("Conexion establecida!");
 			return conexion;
