@@ -75,23 +75,13 @@ public class Biblioteca {
 		if (!documento.isPrestado()) {
 			Usuario usuario = validarUsuario(dni);
 			if (usuario != null) {
-
 				String queryUpdate = "UPDATE documentos SET prestado = 1 WHERE codigoAlfaNum = '"
 						+ documento.getCodigoAlfaNum() + "'";
 				String queryInsert = "INSERT INTO prestamos(dni,codigoAlfaNum,fechaIniPrestamo,fechaFinPrestamo,"
 						+ "devuelto) VALUES (?,?,?,?,?);";
 				LocalDate localDateHoy = LocalDate.now();
 				LocalDate finPrestamo;
-				if (usuario instanceof Socio) {
-					finPrestamo = documento instanceof Revista
-							? localDateHoy.plus(Revista.MAX_DURACION_SOCIO, ChronoUnit.DAYS)
-							: localDateHoy.plus(Libro.MAX_DURACION_SOCIO, ChronoUnit.DAYS);
-
-				} else {
-					finPrestamo = documento instanceof Revista
-							? localDateHoy.plus(Revista.MAX_DURACION_OCAS, ChronoUnit.DAYS)
-							: localDateHoy.plus(Libro.MAX_DURACION_OCAS, ChronoUnit.DAYS);
-				}
+				finPrestamo = calcularFechaFinPrestamo(documento, usuario);
 				try (Statement stmt = con.createStatement();
 						PreparedStatement pStmt = con.prepareStatement(queryInsert)) {
 					con.setAutoCommit(false);
@@ -116,6 +106,25 @@ public class Biblioteca {
 			System.out.println("El documento " + documento.getTitulo() + " ya está prestado.");
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param documento Tipo de documento que se va a prestar
+	 * @param usuario   tipo de usuario que se va a prestar
+	 * @return LocalDate de hoy mas los dias que puede estar prestado el documento a
+	 *         ese usuario.
+	 */
+	private LocalDate calcularFechaFinPrestamo(Documento documento, Usuario usuario) {
+		LocalDate finPrestamo;
+		if (usuario instanceof Socio) {
+			return documento instanceof Revista ? LocalDate.now().plus(Revista.MAX_DURACION_SOCIO, ChronoUnit.DAYS)
+					: LocalDate.now().plus(Libro.MAX_DURACION_SOCIO, ChronoUnit.DAYS);
+
+		} else {
+			return documento instanceof Revista ? LocalDate.now().plus(Revista.MAX_DURACION_OCAS, ChronoUnit.DAYS)
+					: LocalDate.now().plus(Libro.MAX_DURACION_OCAS, ChronoUnit.DAYS);
+		}
 	}
 
 	/**
