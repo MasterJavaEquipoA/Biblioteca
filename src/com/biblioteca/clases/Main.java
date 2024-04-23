@@ -32,15 +32,15 @@ public class Main {
 
 			case "a": {// Seleccionar Documento
 				Documento documentoActual = new Documento();
-				System.out.println("Comprobamos que el documento con codigo '131859855-9' ");
-				System.out.println("Si existe lo asignamos a documento actual");
+				System.out.println("Comprobando que el documento con codigo '131859855-9' existe ... ");
+				System.out.println("Existe! Asignado a Documento Actual");
 				documentoActual = Biblioteca.seleccionarDocumento("131859855-9");
 				break;
 			}
 
 			case "b": {// Validar Usuario
-				System.out.println("Comprobamos que existe el usuario con DNI: '56734598D' ");
-				Biblioteca.validarUsuario("56734598D");
+				System.out.println("Comprobando que existe el usuario con DNI: '56734598D' ...");
+				System.out.println("Existe? -> " + Biblioteca.validarUsuario("56734598D"));
 				break;
 			}
 			case "c": {// Prestar Documento

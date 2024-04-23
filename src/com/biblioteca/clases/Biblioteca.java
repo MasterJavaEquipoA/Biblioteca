@@ -64,6 +64,52 @@ public class Biblioteca {
 	}
 
 	/**
+	 * Valida un usuario mediante dni en la BD
+	 * 
+	 * @param usuario
+	 * @return
+	 */
+	public static boolean validarUsuario(String dniUsuario) {
+		String query = "SELECT *"
+				+ "FROM usuarios "
+				+ "WHERE dni = ?;";
+		
+		Usuario usuario = null;
+		
+		try {
+			PreparedStatement stmt = conexion.prepareStatement(query);
+			stmt.setString(1, dniUsuario);
+			ResultSet resultado = stmt.executeQuery();
+			
+			//Si devuelve true es que ha encontrado el dni
+			if (resultado.next()) {
+				System.out.println("Existe! Usuario Validado");
+				
+				if (resultado.getBoolean("socio")) {
+					usuario = new Socio();
+					System.out.println("El usuario es de tipo socio");
+					
+				}else {
+					usuario = new Ocasional();
+					System.out.println("El usuario es de tipo ocasional");
+				}
+				
+				usuario.setDni(resultado.getString("dni"));
+				usuario.setNombre(resultado.getString("nombre"));
+				
+				return true;
+				
+			}else {
+				return false;
+			}
+		
+		} catch (SQLException e) {
+			e.getMessage();
+		}
+		return false;
+	}
+	
+	/**
 	 * Vincula el objeto documento a un usuario Primero se llama a la funcion que
 	 * valida que usuario existe en la BD
 	 * 
@@ -73,20 +119,10 @@ public class Biblioteca {
 	public void prestarDocumento(String usuario, Documento documento) {
 		Statement stmt;
 		if (validarUsuario(usuario)) {
+			
+			
 
 		}
-	}
-
-	/**
-	 * Valida usuaio en la BD mediante una consulta
-	 * 
-	 * @param usuario
-	 * @return
-	 */
-	public static boolean validarUsuario(String usuario) {
-		String query = "SELECT * FROM usuarios WHERE dni = " + usuario;
-		//
-		return false;
 	}
 
 	/**
