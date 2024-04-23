@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Conexion {
 	
-	private static String schema = "biblioteca";
+	private static String schema = "/biblioteca";
 	private static final String url = "jdbc:mysql://localhost:3306" + schema;
 	private static final String user = "root";
 	private static final String password = "root";
@@ -24,12 +24,13 @@ public class Conexion {
 			conexion = DriverManager.getConnection(url, user, password);
 			System.out.println("Conexion establecida!");
 			
+			return conexion;
+			
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println("Error al conectar con la DB..");
 			e.printStackTrace();
+			return null;
 		}
-		
-		return conexion;
 	}
 }
 	
