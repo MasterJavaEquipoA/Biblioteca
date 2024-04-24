@@ -13,6 +13,7 @@ public class Main {
 		Biblioteca biblio = new Biblioteca();
 		Usuario camilo = new Usuario();
 		Documento documentoActual = new Documento();
+		Documento documentoABuscar = new Documento("123456789-A", "Red Jungle");
 		Scanner scanner = new Scanner(System.in);
 		String opcion;
 		boolean salir = false;
@@ -57,11 +58,11 @@ public class Main {
 			}
 			case "e": {// Buscar Documento
 				System.out.println("Buscando el documento por titulo ...");
-				biblio.buscarDocumento("Jungle Red");
+				biblio.buscarDocumento(documentoABuscar.getTitulo());
 				break;
 			}
 			case "f": {// Generar Informe
-
+				
 				break;
 			}
 			case "s": {// Salir de menu

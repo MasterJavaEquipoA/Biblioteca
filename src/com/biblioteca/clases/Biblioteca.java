@@ -174,6 +174,9 @@ public class Biblioteca {
 				System.out.println("Error al devolver el libro..");
 			}
 			
+			stmt.close();
+			stmt2.close();
+			
 			conexion.commit();
 			
 		} catch (SQLException e) {
@@ -189,8 +192,34 @@ public class Biblioteca {
 	 * @return
 	 */
 	public Documento buscarDocumento(String titulo) {
-		String query = "SELECT * FROM documentos WHERE titulo LIKE %" + titulo + "%";
-		return new Documento(query, titulo);
+		String queryBusqueda = "SELECT * FROM documentos WHERE titulo LIKE ?;";
+		Documento docEncontrado = new Documento();
+		
+		try {
+			PreparedStatement stmt = conexion.prepareStatement(queryBusqueda);
+			stmt.setString(1, "%" + titulo + "%");
+			
+			ResultSet rs = stmt.executeQuery(queryBusqueda);
+			
+			if (rs.next()) {//Si encuentra algun titulo parecido..
+				System.out.println("Se ha encontrado una ocurrencia..");
+				System.out.println(rs.getString("titulo"));
+				
+				docEncontrado.setTitulo(rs.getString("titulo"));
+				return docEncontrado;
+				
+			}else {
+				System.out.println("No se ha encontrado ningún titulo parecido en la BD");
+				return null;
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		return docEncontrado;
+		
 	}
 
 	/**
