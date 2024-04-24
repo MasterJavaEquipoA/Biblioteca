@@ -51,11 +51,13 @@ public class Main {
 				break;
 			}
 			case "d": {// Devolver Documento
-
+				System.out.println("Devolviendo documento actual a la biblioteca ...");
+				biblio.devolverDocumento(camilo, documentoActual);
 				break;
 			}
 			case "e": {// Buscar Documento
-
+				System.out.println("Buscando el documento por titulo ...");
+				biblio.buscarDocumento("Jungle Red");
 				break;
 			}
 			case "f": {// Generar Informe

@@ -139,6 +139,7 @@ public class Biblioteca {
 			conexion.commit();
 		
 			System.out.println("Prestamos realizado con exito!");
+			System.out.println("Se ha prestado el libro " + documento.getTitulo() + " al usuario " + camilo.getNombre());
 		}catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -151,8 +152,34 @@ public class Biblioteca {
 	 * @param usuario
 	 * @param documento
 	 */
-	public void devolverDocumento(String usuario, Documento documento) {
-
+	public void devolverDocumento(Usuario usuario, Documento documento) {
+		
+		//Vuelvo a necesitar transaction para modificar ambas tablas: Prestamos - Documentos
+		
+		String queryUpdateDocumentos = "UPDATE documentos SET prestado = 0 WHERE codigoAlfaNum = '" + documento.getCodigoAlfaNum() + "';";
+		String queryUpdatePrestamos = "UPDATE prestamos SET devuelto = 1 WHERE codigoAlfaNum = '" + documento.getCodigoAlfaNum() + "';";
+		
+		try {
+			 conexion.setAutoCommit(false);//transaction
+			Statement stmt = conexion.createStatement();
+			 
+			Statement stmt2 = conexion.createStatement();
+			
+			if (stmt.execute(queryUpdateDocumentos)) {
+				
+				stmt2.execute(queryUpdatePrestamos);
+				System.out.println("Documento devuelto con exito!");
+				System.out.println("El usuario " + usuario.getNombre() + " ha devuelto el libro " + documento.getTitulo());
+			}else {
+				System.out.println("Error al devolver el libro..");
+			}
+			
+			conexion.commit();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
 	}
 
 	/**
@@ -166,7 +193,6 @@ public class Biblioteca {
 		return new Documento(query, titulo);
 	}
 
-	// Metodos de biblioteca
 	/**
 	 * Genera un informe detallado con info sobre los documentos prestados
 	 * 
